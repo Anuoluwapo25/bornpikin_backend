@@ -29,7 +29,7 @@ ALLOWED_HOSTS = [
     'bornpikin-backend-3.onrender.com',
     'localhost',
     '127.0.0.1',
-    'bornpikin.vercel.app',
+    'https://bornpikin.vercel.app',
 ]
 
 
