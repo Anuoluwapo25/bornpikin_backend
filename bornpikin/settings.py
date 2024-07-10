@@ -25,7 +25,12 @@ SECRET_KEY = 'django-insecure-yl8sl^#c6ep8s6-@_lkol981s!)#sud33vd#v+whw($f0^sl0r
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'bornpikin-backend-3.onrender.com',
+    'localhost',
+    '127.0.0.1',
+    'bornpikin.vercel.app',
+]
 
 
 # Application definition
