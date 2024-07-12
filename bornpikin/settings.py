@@ -27,8 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'bornpikin-backend-3.onrender.com',
-    'localhost',
-    '127.0.0.1',
+    'http://localhost:3000',
     'https://bornpikin.vercel.app',
 ]
 
