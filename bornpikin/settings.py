@@ -29,6 +29,7 @@ ALLOWED_HOSTS = [
     'bornpikin-backend-3.onrender.com',
     'http://localhost:3000',
     'https://bornpikin.vercel.app',
+    '127.0.0.1',
 ]
 
 
@@ -43,6 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'userAuth',
     'rest_framework',
+    'rest_framework.authtoken',
     'corsheaders',
 ]
 
@@ -141,3 +143,15 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.TokenAuthentication',
+    )
+}
+
+
+AUTHENTICATION_BACKENDS = [
+    'userAuth.backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
