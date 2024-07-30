@@ -1,47 +1,39 @@
-from rest_framework import generics, permissions
-from rest_framework.response import Response
+from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
-from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
 from django.contrib.auth import authenticate
-from rest_framework.authtoken.views import ObtainAuthToken
-from .serializers import RegisterSerializer, CustomUserSerializer
+from rest_framework.authtoken.models import Token
+from .serializers import RegisterSerializer, LoginSerializer, CustomUserSerializer
 from .models import CustomUser
 
-class RegisterView(generics.CreateAPIView):
-    queryset = CustomUser.objects.all()
-    serializer_class = RegisterSerializer
+# Register View
+class RegisterView(APIView):
     permission_classes = [permissions.AllowAny]
 
-#class CustomAuthToken(ObtainAuthToken):
-    #serializer_class = CustomAuthTokenSerializer
-   # def post(self, request, *args, **kwargs):
-      #  serializer = self.serializer_class(data=request.data, context={'request': request})
-        #serializer.is_valid(raise_exception=True)
-        #user = serializer.validated_data['user']
-        #token, created = Token.objects.get_or_create(user=user)
-        #return Response({
-        #    'token': token.key,
-          #  'user_id': user.pk,
-            #'username': user.username
-       # })
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            if user:
+                token, created = Token.objects.get_or_create(user=user)
+                return Response({
+                    'user': CustomUserSerializer(user).data,
+                    'token': token.key
+                }, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def get(self, request):
+        return Response({'message': 'Please use POST to register a new user'}, status=status.HTTP_200_OK)
+
+# Login View
 class LoginView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def post(self, request):
-        email = request.data.get('email')
-        password = request.data.get('password')
-        print(f"email: {email}, Password: {password}")
-        user = authenticate(email=email, password=password)
-        print(f"Authenticated user: {user}")
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            return Response(serializer.validated_data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_401_UNAUTHORIZED)
 
-        user = authenticate(email=email, password=password)
-
-        if user is not None:
-            token, created = Token.objects.get_or_create(user=user)
-            return Response({'token': token.key}, status=200)
-        else:
-            return Response({'error': 'Invalid credentials'}, status=401)
-        
     def get(self, request):
-        return Response({'message': 'Login page'}, status=200)
+        return Response({'message': 'Please use POST to login'}, status=status.HTTP_200_OK)
