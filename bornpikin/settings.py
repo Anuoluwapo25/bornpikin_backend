@@ -30,6 +30,7 @@ ALLOWED_HOSTS = [
     'http://localhost:3000',
     'https://bornpikin.vercel.app',
     '127.0.0.1',
+    'http://localhost:5173',
 ]
 
 
@@ -62,7 +63,7 @@ MIDDLEWARE = [
 CORS_ALLOW_ALL_ORIGINS = True
 
 CORS_ALLOWED_ORIGINS = [
-    'http://localhost:5174',
+    'http://localhost:5173',
     'https://bornpikin.vercel.app',
 ]
 
@@ -154,4 +155,7 @@ REST_FRAMEWORK = {
 AUTHENTICATION_BACKENDS = [
     'userAuth.backends.EmailBackend',
     'django.contrib.auth.backends.ModelBackend',
+    'userAuth.backends.EmailBackend',
 ]
+
+

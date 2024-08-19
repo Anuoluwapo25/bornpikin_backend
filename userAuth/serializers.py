@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
-from .models import CustomUser
+from .models import CustomUser, BookUser
 
 
 class CustomUserSerializer(serializers.Serializer):
@@ -58,26 +58,32 @@ class RegisterSerializer(serializers.Serializer):
             raise serializers.ValidationError("A user with this username already exists.")
         return value
 
-# class RegisterSerializer(serializers.Serializer):
-#     username = serializers.CharField()
-#     password = serializers.CharField(write_only=True)
-#     name = serializers.CharField()
-#     email = serializers.EmailField()
-#     phone_number = serializers.CharField()
-#     location = serializers.CharField()
+class BookUserSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    services = serializers.CharField(max_length=255)
+    dentist = serializers.CharField(max_length=255)
+    name = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all()) 
+    time = serializers.TimeField()
+    date = serializers.DateField()
+    is_completed = serializers.BooleanField(default=False)
 
-#     def create(self, validated_data):
-#         user = CustomUser.objects.create_user(
-#             username=validated_data['username'],
-#             password=validated_data['password'],
-#             name=validated_data['name'],
-#             email=validated_data['email'],
-#             phone_number=validated_data['phone_number'],
-#             location=validated_data['location']
-#         )
-#         return user
-
-# def retrieve(self, request, pk=None):
-#     user = CustomUser.objects.get(pk=pk)
-#     serializer = CustomUserSerializer(user)
-#     return Response(serializer.data)
+    def create(self, validated_data):
+        book = BookUser.objects.create(
+            name=validated_data['name'],
+            services=validated_data['services'],
+            dentist=validated_data['dentist'],
+            time=validated_data['time'],
+            date=validated_data['date'],
+            is_completed=validated_data.get('is_completed', False)
+        )
+        return book
+    
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get('name', instance.name)
+        instance.services = validated_data.get('services', instance.services)
+        instance.dentist = validated_data.get('dentist', instance.dentist)
+        instance.time = validated_data.get('time', instance.time)
+        instance.date = validated_data.get('date', instance.date)
+        instance.is_completed = validated_data.get('is_completed', instance.is_completed)
+        instance.save()
+        return instance

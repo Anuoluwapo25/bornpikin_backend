@@ -12,3 +12,16 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.email
+    
+
+class BookUser(models.Model):
+    name = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    services = models.CharField(max_length=255, blank=True)
+    dentist = models.CharField(max_length=255, blank=True)
+    date = models.DateField(max_length=15, blank=True)
+    time = models.TimeField(max_length=15, blank=True)
+    is_completed = models.BooleanField(default=False)
+
+
+    def __str__(self):
+        return self.dentist
